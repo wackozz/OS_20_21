@@ -22,6 +22,8 @@ coded by wackoz (s279895@)
 #define WHT "\x1B[37m"
 #define RESET "\x1B[0m"
 
+/*
+Used to generate time
 char *myGetTime() {
     time_t rawseconds;
     time(&rawseconds);
@@ -29,7 +31,7 @@ char *myGetTime() {
     time_str[strlen(time_str) - 1] = 0;  //null for the \n
     return time_str;
 }
-
+*/
 void title(){
     printf("\e[1m     ______________________________________\n");
     printf("\e[1m   /\t\t\t\t\t   /\n");
@@ -41,11 +43,11 @@ int main(int argc, char *argv[]) {
     title();
     pid_t pid[5];
     int N = 0, mpy = 0, i = 0, y = 0, status = 0;
-    N = atoi(argv[1]);
     if (argc != 2) {
         printf(RED "Error: wrong argument number. Usage: %s N.\n", argv[0]);
         exit(EXIT_FAILURE);
     }
+    N = atoi(argv[1]);
     if (N < 1 || N > 5) {
         printf(RED "Error: N must be comprised between 1 and 5.\n");
         exit(EXIT_FAILURE);
