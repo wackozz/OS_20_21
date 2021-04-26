@@ -20,9 +20,9 @@ int main() {
     perror("shm_open: ");
     exit(-1);
   }
-  
-  ftruncate(fd, SIZE); //length of the virtual file
-  
+
+  ftruncate(fd, SIZE);  // length of the virtual file
+
   data = (int *)mmap(0, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
   if (data < 0) {
@@ -34,7 +34,7 @@ int main() {
     printf("Writing in the shared memory: data[%d]: %d\n", i, data[i]);
   }
 
-  munmap(data, SIZE); //unmap
-  close(fd); //we don't unlink, a receiver have to read the shared mem
+  munmap(data, SIZE);  // unmap
+  close(fd);  // we don't unlink, a receiver have to read the shared mem
   return 0;
 }

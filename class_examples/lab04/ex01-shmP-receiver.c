@@ -21,7 +21,7 @@ int main() {
   }
   data = (int *)mmap(0, SIZE, PROT_READ, MAP_SHARED, fd, 0);
 
-  for (i = 0 ; i < 2; i++) {
+  for (i = 0; i < 2; i++) {
     printf("Reading from the shared memory: The data[%d]: %d\n", i, data[i]);
   }
   munmap(data, SIZE);
