@@ -4,60 +4,60 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-pthread_mutex_t m[2];
-pthread_cond_t cond[2];
-int k[2] = {0};
-int tnum = 0;
+pthread_mutex_t m[4];
+pthread_cond_t cond[3];
+int kill[3] = {0, 0, 0};
+int thread_number = -1;
 
-void* func(void* arg) {
-  int i = 0;
+
+
+void* fun(void* arg) {
+  int my_num = 0;
   pthread_mutex_lock(&m[0]);
-  i = tnum;
-  tnum++;
+  thread_number++;
+  my_num = thread_number;
   pthread_mutex_unlock(&m[0]);
-  printf("[%d] Thread no. [%lu]\n", i, pthread_self());
+  printf("[%d] Thread %lu\n", my_num, pthread_self());
 
-  while (k[i] != 0) {
-    pthread_mutex_lock(&m[i]);
-    pthread_cond_wait(&cond[i], &m[i]);
-    printf("\t[%d] Thread no. [%lu]\n", i, pthread_self());
-    pthread_mutex_unlock(&m[i]);
+  while (!kill[my_num]) {
+    pthread_mutex_lock(&m[my_num]);
+    pthread_cond_wait(&cond[my_num], &m[my_num]);
+    printf("\n[%d] Thread %lu.", my_num, pthread_self());
+    pthread_mutex_unlock(&m[my_num]);
   }
-
+  printf("\t\tKILLED.");
   pthread_exit(NULL);
 }
 
 int main() {
-  int t2kill = 0, killedall = 0;
+  int to_kill;
   pthread_t tid[3];
+
+  // mutex initializer
+  for (int i = 0; i < 4; i++) {
+    pthread_mutex_init(&m[i], NULL);
+  }
+  // condition initializer
   for (int i = 0; i < 3; i++) {
     pthread_cond_init(&cond[i], NULL);
   }
+  // thread creation
   for (int i = 0; i < 3; i++) {
-    pthread_mutex_init(&m[i], NULL);
+    pthread_create(&tid[i], NULL, fun, NULL);
   }
-
-  for (int i = 0; i < 3; i++) {
-    pthread_create(&tid[i], NULL, func, NULL);
-  }
-
-  sleep(1);
-  while (!killedall) {
-    printf("Which thread do you want to kill?\n");
-    scanf("%d", &t2kill);
-    if (t2kill < 0 || t2kill > 2) {
-      t2kill = 0;
-    }
-    k[t2kill] = 1;
+  while (!kill[0] || !kill[1] || !kill[2]) {
+    sleep(1);
+    printf("\nWhich thread do you want to kill?");
+    scanf("%d", &to_kill);
+    kill[to_kill] = 1;
     pthread_cond_signal(&cond[0]);
     pthread_cond_signal(&cond[1]);
     pthread_cond_signal(&cond[2]);
-    if (k[0] == 1 && k[1] == 1 && k[2] == 1) {
-      killedall = 1;
-    }
   }
-
+  printf("Done..\n");
+  // thread join
   for (int i = 0; i < 3; i++) {
-    pthread_join(tid[0], NULL);
+    pthread_join(tid[i], NULL);
+    printf("join %d\n", i);
   }
 }
