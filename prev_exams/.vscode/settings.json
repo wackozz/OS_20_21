@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "*.c": "c",
+        "unistd.h": "c",
+        "cctype": "c",
+        "cmath": "c",
+        "cstdarg": "c",
+        "cstdio": "c",
+        "cstdlib": "c",
+        "type_traits": "c",
+        "limits": "c",
+        "*.tcc": "c",
+        "cstdint": "c",
+        "typeinfo": "c"
+    }
+}
